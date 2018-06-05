@@ -8,6 +8,10 @@ const app = express();
 mongoose.Promise = global.Promise;
 mongoose.connect(config.DATABASE);
 
+const { User } = require('./models/user');
+const { Book } = require('./models/book');
+
+
 app.use(bodyParser.json());
 app.use(cookieParser());
 
