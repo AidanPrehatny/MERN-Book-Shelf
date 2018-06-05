@@ -37,7 +37,28 @@ app.get('/api/books',(req,res)=>{
   })
 })
 
+// TAKES ALL USERS ON DATABASE //
+
+app.get('/api/users',(req,res)=>{
+  User.find({},(err,users)=>{
+    if(err) return res.status(400).send(err);
+    res.status(200).send(users)
+  })
+})
+
+
+// REQUIRES OWNER ID //
+
+app.get('/api/user_posts',(req,res)=>{
+    Book.find({ownerId:req.query.user}).exec((err,docs)=>{
+        if(err) return res.status(400).send(err);
+        res.send(docs)
+    })
+})
+
+
 // POST //
+
 app.post('/api/book',(req,res)=>{
   const book = new Book(req.body)
 
@@ -68,18 +89,25 @@ app.post('/api/register',(req,res)=>{
 // LOGIN //
 
 app.post('/api/login',(req,res)=>{
+    User.findOne({'email':req.body.email},(err,user)=>{
+        if(!user) return res.json({isAuth:false,message:'Auth failed, email not found'})
 
-  User.findOne({'email':req.body.email},(err,user)=>{
-    if(!user) return res.json({isAuth:false,message:'Auth failed, email not found'});
+        user.comparePassword(req.body.password,(err,isMatch)=>{
+            if(!isMatch) return res.json({
+                isAuth:false,
+                message:'Wrong password'
+            });
 
-    user.comparePassword(req.body.password,(err,isMatch) => {
-      if(!isMatch) return res.json({
-        isAuth:false,
-        message: 'Wrong password'
-      });
-      // TODO: Generator for token
+            user.generateToken((err,user)=>{
+                if(err) return res.status(400).send(err);
+                res.cookie('auth',user.token).json({
+                    isAuth:true,
+                    id:user._id,
+                    email:user.email
+                })
+            })
+        })
     })
-  })
 })
 
 // UPDATE //
@@ -92,6 +120,21 @@ app.post('/api/book_update',(req,res)=>{
       doc
     })
   })
+})
+
+// GET DATA OF REVIEWER //
+
+app.get('/api/getReviewer',(req,res)=>{
+  let id = req.query.id;
+
+  User.findById(id,(err,doc)=>{
+    if(err) return res.status(400).send(err);
+    res.json({
+      name: doc.name,
+      lastname: doc.lastname
+    })
+  })
+
 })
 
 // DELETE //
