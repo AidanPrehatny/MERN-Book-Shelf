@@ -33,6 +33,36 @@ const userSchema = mongoose.Schema({
   }
 })
 
+
+// COMPARES PASSWORD //
+
+userSchema.methods.comparePassword = (candidatePassword,cb) => {
+  bcrypt.compare(candidatePassword,this.password,(err,isMatch) => {
+    if(err) return cb(err);
+    cb(null, isMatch);
+  })
+}
+
+
+// REGISTERS USER //
+
+userSchema.pre('save', ()=>{
+  let user = this;
+
+  if(user.isModified('password')){
+    bcrypt.genSalt(SALT_I, (err,salt)=>{
+      if(err) return next(err);
+      bcrypt.hash(user.password, salt,(err,hash)=>{
+        if(err) return next(err);
+        user.password = hash;
+        next();
+      })
+    })
+  } else {
+    next()
+  }
+})
+
 const User = mongoose.model('User', userSchema)
 
 module.exports = { User }
