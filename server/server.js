@@ -16,6 +16,16 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 
 
+// VERIFIES USER AUTH ON PAGE ROUTE //
+app.get('/api/auth', auth,(req,res)=>{
+  res.json({
+    isAuth:true,
+    id:req.user._id,
+    email:req.user.email,
+    name:req.user.name,
+    lastname:req.user.lastname
+  })
+})
 
 // GET //
 app.get('/api/getBook', (req,res)=>{
