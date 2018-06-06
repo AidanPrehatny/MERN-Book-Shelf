@@ -10,9 +10,12 @@ mongoose.connect(config.DATABASE);
 
 const { User } = require('./models/user');
 const { Book } = require('./models/book');
+const { auth } = require('./middleware/auth');
 
 app.use(bodyParser.json());
 app.use(cookieParser());
+
+
 
 // GET //
 app.get('/api/getBook', (req,res)=>{
@@ -23,6 +26,18 @@ app.get('/api/getBook', (req,res)=>{
     res.send(doc)
   })
 })
+
+
+// LOGOUT //
+
+app.get('/api/logout',auth,(req,res)=>{
+  req.user.deleteToken(req.token, (err,user)=>{
+    if(err) return res.status(400).send(err);
+    res.sendStatus(200)
+  })
+})
+
+
 
 app.get('/api/books',(req,res)=>{
   // localhost:3002/api/books?skip=3&limit=2&order=asc
@@ -134,7 +149,6 @@ app.get('/api/getReviewer',(req,res)=>{
       lastname: doc.lastname
     })
   })
-
 })
 
 // DELETE //
