@@ -1,8 +1,17 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import axios from 'axios';
 
 class App extends Component {
+
+  componentWillMount(){
+    axios.get('/api/getBook?id=5b160c6ca4e7297c4981ec5a')
+    .then(response => {
+      console.log(response.data)
+    })
+  }
+
   render() {
     return (
       <div className="App">
