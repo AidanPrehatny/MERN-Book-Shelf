@@ -52,7 +52,7 @@ const SideNavItems = () => {
       type: 'navItem',
       icon: 'sign-out',
       text: 'Logout',
-      link: '/user/logout',
+      link: '/user/logout', 
       restricted: false
     }
   ]
