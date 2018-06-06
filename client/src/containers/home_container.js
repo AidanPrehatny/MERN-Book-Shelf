@@ -10,6 +10,12 @@ class HomeContainer extends Component {
     this.props.dispatch(getBooks(1,0,'desc'))
   }
 
+  loadmore = () => {
+    let count = this.props.books.list.length;
+    console.log(count)
+    this.props.dispatch(getBooks(1,count,'desc', this.props.books.list))
+  }
+
   renderItems = (books) => (
     books.list ?
       books.list.map(item => (
@@ -22,6 +28,10 @@ class HomeContainer extends Component {
     return (
       <div>
         {this.renderItems(this.props.books)}
+        <div
+          className="loadmore"
+          onClick={this.loadmore}
+          >Load More</div>
       </div>
     );
   }
