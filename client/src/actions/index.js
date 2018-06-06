@@ -20,8 +20,9 @@ export function getBooks(
     payload: request
   }
 }
-export function getBookWithReviewer(id){
 
+
+export function getBookWithReviewer(id){
   const request = axios.get(`/api/getBook?id=${id}`)
 
   return (dispatch)=>{
@@ -39,10 +40,16 @@ export function getBookWithReviewer(id){
           payload:response
         })
       })
-
-
     })
-
   }
+}
 
+export function clearBookWithReviewer(){
+  return {
+    type: 'CLEAR_BOOK_W_REVIEWER',
+    payload: {
+      book: {},
+      reviewer:{}
+    }
+  }
 }
